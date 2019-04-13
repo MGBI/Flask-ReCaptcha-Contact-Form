@@ -1,0 +1,7 @@
+version: '2.1'
+
+services:
+  reader:
+    image: mgbi/python-recaptcha
+    ports:
+      - "8000:5000"
