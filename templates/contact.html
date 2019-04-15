@@ -1,42 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Contact Form</title>
-<script src='https://www.google.com/recaptcha/api.js'></script>
+  <title>Contact Form</title>
 </head>
 <body>
-<h2>Contact</h2>
-<form action="{{ url_for('contact') }}" method="post">
-<table border="2">
-<tr>
-<td>Name :</td> 
-<td><input type="text" name="name" /></td>
-</tr>
-<tr>
-<td>Email  :</td> 
-<td><input type="email" name="email" /></td>
-</tr>
-<tr>
-<td>Message :</td> 
-<td><textarea name="message" rows="4" cols="50"></textarea></td>
-</tr>
-<tr>
-<td>Security Check</td>
-<td><div class="g-recaptcha" data-sitekey="{{ sitekey }}"></div></td>
-</tr>
-<tr>
-<td><input type="submit" value="Send" /></td>
-</tr>
-</table>
-</form>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+  <h2>Contact</h2>
+  <form action="{{ url_for('contact') }}" method="post" id="form-id">
+  <table border="2">
+  <tr>
+  <td>Name:</td>
+  <td><input type="text" name="name" /></td>
+  </tr>
+  <tr>
+  <td>Email:</td>
+  <td><input type="email" name="email" /></td>
+  </tr>
+  <tr>
+  <td>Message:</td>
+  <td><textarea name="message" rows="4" cols="50"></textarea></td>
+  </tr>
+  <tr>
+  <td>Captcha Response:</td>
+  <td><input id="captcha-response" name="captcha-response"/></td>
+  </tr>
+  <tr>
+  <td><button id="button-id" type="button" onclick="formSubmit();">Submit</button></td>
+  </tr>
+  </table>
+  </form>
+  <script src="https://www.google.com/recaptcha/api.js?render={{ sitekey }}"></script>
+  <script>
+  function formSubmit(){
+      grecaptcha.ready(function() {
+        grecaptcha.execute('{{ sitekey }}', {action: 'testsubmit'}).then(function(token) {
+          document.getElementById("captcha-response").value = token;
+          document.getElementById("form-id").submit();
+        });
+    });
+  }
+  </script>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class=flashes>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 </body>
 </html>
